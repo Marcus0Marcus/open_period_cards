@@ -2,16 +2,14 @@ package main
 
 import (
 	"admin/app"
+	"admin/middleware/global"
 	"github.com/go-chassis/go-chassis/v2"
 	"github.com/go-chassis/openlog"
-	"middleware/global"
 )
-var globalInfo *global.Global
-
-
+var GlobalInfo *global.Global
 func main() {
-	globalInfo = global.NewGlobal()
-	defer global.ClearGlobal(globalInfo)
+	GlobalInfo = global.NewGlobal()
+	defer global.ClearGlobal(GlobalInfo)
 	// register struct
 	app.RegisterRouter()
 	//start all server you register in server/schemas.

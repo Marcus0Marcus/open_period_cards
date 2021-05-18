@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"admin/middleware/response"
 	"github.com/go-chassis/go-chassis/v2/server/restful"
 	"net/http"
 )
@@ -8,12 +9,20 @@ import (
 type LoginCtrl struct {
 
 }
+type LoginInfoReq struct {
+	Phone string    `json:"phone"`
+	Password string   `json:"password"`
+}
+type LoginInfoResp struct {
+	Cookie string   `json:"cookie"`
+}
 func (r *LoginCtrl) Login(b *restful.Context) {
-	phone, err := b.ReadBodyParameter("phone")
-	if err != nil {
-		b.Write([]byte("get phone: err"))
+	req := &LoginInfoReq{}
+	_ = b.ReadEntity(req)
+	resp := &LoginInfoResp{
+		Cookie:"ni,a",
 	}
-	b.Write([]byte("get phone: " + phone))
+	response.Data(resp,b)
 }
 func (r *LoginCtrl) URLPatterns() []restful.Route {
 	return []restful.Route{
