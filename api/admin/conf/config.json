@@ -1,0 +1,8 @@
+{
+  "mysql": {
+    "dsn": "root:123456@/mysql?charset=utf8&parseTime=True&loc=Local"
+  },
+  "redis": {
+    "dsn": "localhost:6379"
+  }
+}
