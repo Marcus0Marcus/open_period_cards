@@ -1,9 +1,9 @@
 package global
 
 import (
-	"admin/middleware/cache"
-	"admin/middleware/conf"
-	"admin/middleware/db"
+	"middleware/cache"
+	"middleware/conf"
+	"middleware/db"
 )
 
 type Global struct {
