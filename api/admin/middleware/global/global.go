@@ -11,6 +11,25 @@ type Global struct {
 	CacheConn *cache.Cache
 	DbConn *db.DbConn
 }
+var globalInfo *Global
+func GetDbConn() *db.DbConn {
+	if globalInfo == nil {
+		return nil
+	}
+	return globalInfo.DbConn
+}
+func GetCacheConn() *cache.Cache {
+	if globalInfo == nil {
+		return nil
+	}
+	return globalInfo.CacheConn
+}
+func GetConfig() *conf.Conf{
+	if globalInfo == nil {
+		return nil
+	}
+	return globalInfo.Conf
+}
 func NewGlobal() *Global{
 	// load json config
 	jsonConf := conf.LoadConfig()
@@ -20,11 +39,11 @@ func NewGlobal() *Global{
 	
 	// init cache
 	cacheConn := cache.NewCacheConn(jsonConf.Config.Redis.DSN)
-	return &Global{
-		Conf : jsonConf,
-		CacheConn : cacheConn,
-		DbConn : dbConn,
-	}
+	globalInfo = new(Global)
+	globalInfo.Conf = jsonConf
+	globalInfo.CacheConn = cacheConn
+	globalInfo.DbConn = dbConn
+	return globalInfo
 }
 
 func ClearGlobal(global *Global)  {
