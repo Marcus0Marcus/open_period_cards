@@ -7,11 +7,13 @@ import (
 )
 
 type Global struct {
-	Conf *conf.Conf
+	Conf      *conf.Conf
 	CacheConn *cache.Cache
-	DbConn *db.DbConn
+	DbConn    *db.DbConn
 }
+
 var globalInfo *Global
+
 func GetDbConn() *db.DbConn {
 	if globalInfo == nil {
 		return nil
@@ -24,19 +26,19 @@ func GetCacheConn() *cache.Cache {
 	}
 	return globalInfo.CacheConn
 }
-func GetConfig() *conf.Conf{
+func GetConfig() *conf.Conf {
 	if globalInfo == nil {
 		return nil
 	}
 	return globalInfo.Conf
 }
-func NewGlobal() *Global{
+func NewGlobal() *Global {
 	// load json config
 	jsonConf := conf.LoadConfig()
-	
+
 	// init db
-	dbConn := db.NewDBConn(jsonConf.Config.Mysql.DSN)
-	
+	dbConn := db.NewDBConn(jsonConf.Config.Mysql.DSN, jsonConf.Config.Mysql.Debug)
+
 	// init cache
 	cacheConn := cache.NewCacheConn(jsonConf.Config.Redis.DSN)
 	globalInfo = new(Global)
@@ -46,7 +48,7 @@ func NewGlobal() *Global{
 	return globalInfo
 }
 
-func ClearGlobal(global *Global)  {
+func ClearGlobal(global *Global) {
 	defer global.DbConn.Conn.Close()
 	defer global.CacheConn.Conn.Close()
 }

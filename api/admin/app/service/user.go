@@ -1,27 +1,18 @@
 package service
 
-import "admin/middleware/global"
+import "admin/middleware/dbhelper"
 
-type UserService struct {
+type userService struct {
+}
 
+func NewUserService() *userService {
+	return &userService{}
 }
-type UserInfo struct {
-	Phone string        `json:"phone";gorm="phone"`
-	Name string         `json:"name"`
-	Pwd string          `json:"pwd"`
-	Salt string         `json:"salt"`
-	Mtime int32         `json:"mtime"`
-	Ctime int32         `json:"ctime"`
-	Deleted int32       `json:"deleted"`
-	
-}
-func (r *UserService) GetUserById(id int32) *UserInfo{
-	dbConn := global.GetDbConn()
+func (r *userService) GetUserById(id int32) (error, *UserInfo) {
 	userInfo := &UserInfo{}
-	db := dbConn.Conn.First(userInfo,id)
-	if db.RowsAffected == 0 {
-		return nil
+	err := dbhelper.GetDataById(id, userInfo)
+	if err != nil {
+		return err, nil
 	}
-	return userInfo
-	
+	return nil, userInfo
 }

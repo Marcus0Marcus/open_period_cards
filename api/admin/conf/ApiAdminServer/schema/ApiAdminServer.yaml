@@ -14,6 +14,16 @@ paths:
       responses:
         "200":
           description: ""
+  /logout:
+    post:
+      operationId: Logout
+      consumes:
+      - '*/*'
+      produces:
+      - '*/*'
+      responses:
+        "200":
+          description: ""
   /sayhello/{userid}:
     get:
       operationId: SayHello

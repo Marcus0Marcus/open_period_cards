@@ -1,6 +1,7 @@
 {
   "mysql": {
-    "dsn": "root:123456@/mysql?charset=utf8&parseTime=True&loc=Local"
+    "dsn": "root:123456@/open_period_cards?charset=utf8&parseTime=True&loc=Local",
+    "debug": true
   },
   "redis": {
     "dsn": "localhost:6379"

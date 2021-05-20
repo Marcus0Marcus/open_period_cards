@@ -7,11 +7,12 @@ import (
 	"os"
 )
 
-type Config struct{
+type Config struct {
 	Mysql struct {
-		DSN string `json:"dsn"`
+		DSN   string `json:"dsn"`
+		Debug bool   `json:debug`
 	} `json:"mysql"`
-	
+
 	Redis struct {
 		DSN string `json:"dsn"`
 	} `json:"redis"`
@@ -19,9 +20,10 @@ type Config struct{
 type Conf struct {
 	Config *Config
 }
+
 var defaultJsonConfPath string = "conf/config.json"
 
-func LoadConfig() *Conf{
+func LoadConfig() *Conf {
 	confFile, err := os.Open(defaultJsonConfPath)
 	if err != nil {
 		openlog.Fatal("open Json Config failed. " + err.Error())
@@ -39,6 +41,6 @@ func LoadConfig() *Conf{
 		return nil
 	}
 	return &Conf{
-		Config:config,
+		Config: config,
 	}
 }
