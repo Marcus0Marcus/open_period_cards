@@ -16,6 +16,11 @@ type Config struct {
 	Redis struct {
 		DSN string `json:"dsn"`
 	} `json:"redis"`
+	Cookie struct {
+		Name       string `json:"name"`
+		Prefix     string `json:"prefix"`
+		EncryptKey string `json:"encrypt_key"`
+	}
 }
 type Conf struct {
 	Config *Config

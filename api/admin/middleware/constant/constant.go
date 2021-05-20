@@ -16,4 +16,8 @@ var (
 		Ret:     -200000,
 		Message: "手机号或密码错误",
 	}
+	ErrLogin = &response.FWError{
+		Ret:     -200001,
+		Message: "尚未登录",
+	}
 )

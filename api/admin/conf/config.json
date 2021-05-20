@@ -5,5 +5,10 @@
   },
   "redis": {
     "dsn": "localhost:6379"
+  },
+  "cookie": {
+    "name": "xPath",
+    "prefix": "Admin",
+    "encrypt_key": "PeriodCardsAdmin"
   }
 }

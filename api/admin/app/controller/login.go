@@ -28,23 +28,26 @@ func (r *LoginCtrl) Login(b *restful.Context) {
 		response.Fail(constant.ErrPwd, b)
 		return
 	}
-	err, cookie := util.GetAdminCookie(adminInfo.Phone)
+	err, cookie := util.GenLoginCookie(adminInfo.Phone)
 	if err != nil {
 		response.Fail(err, b)
 	}
-	resp := &protocol.LoginInfoResp{
-		Cookie: cookie,
-	}
-	response.Data(resp, b)
+	util.SetLoginCookie(cookie, b)
+	// TODO add redis cookie
+	response.Success(b)
 }
 
 func (r *LoginCtrl) Logout(b *restful.Context) {
-	req := &protocol.LogoutInfoReq{}
-	_ = b.ReadEntity(req)
-	err, phone := util.ReverseAdminCookie(req.Cookie)
+	err, cookie := util.GetLoginCookie(b)
+	if err != nil {
+		response.Fail(err, b)
+		return
+	}
+	err, phone := util.ReverseLoginCookie(cookie)
 	if err != nil {
 		response.Fail(err, b)
 	}
+	// TODO remove redis cookie
 	response.Data(phone, b)
 }
 
