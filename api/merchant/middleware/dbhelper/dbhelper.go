@@ -39,3 +39,13 @@ func CreateData(data interface{}) (*response.FWError, interface{}) {
 	}
 	return nil, data
 }
+
+// id must be filled update other all fields
+func UpdateData(data interface{}) (*response.FWError, int64) {
+	dbConn := global.GetDbConn()
+	db := dbConn.Conn.Model(data).Update(data)
+	if db.Error != nil {
+		return constant.ErrDb, 0
+	}
+	return nil, dbConn.Conn.RowsAffected
+}

@@ -42,6 +42,10 @@ func (ms *merchantService) cacheSetMerchant(merchantInfo *MerchantInfo) *respons
 	return cachehelper.KeySet(merchantInfo.Phone, string(cacheData))
 }
 
+func (ms *merchantService) cacheDelMerchant(merchantInfo *MerchantInfo) *response.FWError {
+	return cachehelper.KeyDel(merchantInfo.Phone)
+}
+
 // cache function end
 // db function start
 
@@ -62,6 +66,10 @@ func (ms *merchantService) dbCreateMerchant(merchantInfo *MerchantInfo) (*respon
 		return constant.ErrDb, nil
 	}
 	return nil, merchantInfo
+}
+func (ms *merchantService) dbUpdateMerchant(merchantInfo *MerchantInfo) (*response.FWError, int64) {
+	err, row := dbhelper.UpdateData(merchantInfo)
+	return err, row
 }
 
 // db function end
@@ -103,6 +111,19 @@ func (ms *merchantService) CreateMerchant(merchantInfo *MerchantInfo) (*response
 		openlog.Error(err.String() + " cache set merchant failed.")
 	}
 	return nil, merchantInfo
+}
+
+func (ms *merchantService) UpdateMerchant(merchantInfo *MerchantInfo) (*response.FWError, int64) {
+	merchantInfo.Mtime = time.Now().Unix()
+	err, row := ms.dbUpdateMerchant(merchantInfo)
+	if err != nil {
+		return err, row
+	}
+	err = cachehelper.KeyDel(merchantInfo.Phone)
+	if err != nil {
+		openlog.Error(merchantInfo.Phone + " cache del failed.")
+	}
+	return nil, row
 }
 
 // service function end

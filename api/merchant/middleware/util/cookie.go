@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"github.com/go-chassis/go-chassis/v2/server/restful"
+	"github.com/go-chassis/openlog"
 	"merchant/middleware/aes"
 	"merchant/middleware/cachehelper"
 	"merchant/middleware/constant"
@@ -42,6 +43,7 @@ func GetCookie(name string, b *restful.Context) (*response.FWError, string) {
 	if err != nil {
 		return constant.ErrLogin, ""
 	}
+	openlog.Debug(name + cookie.Value)
 	return nil, cookie.Value
 }
 func SetCookie(name string, cookie string, b *restful.Context) {
@@ -65,7 +67,7 @@ func GetLoginPhone(b *restful.Context) (*response.FWError, string) {
 		return err, ""
 	}
 	// check cache
-	err, _ = cachehelper.KeyGet(global.GetConfig().Config.Cookie.Prefix + phone)
+	err, _ = cachehelper.KeyGet(global.GetConfig().Config.Cache.CookiePrefix + phone)
 	if err != nil {
 		return constant.ErrLogin, ""
 	}

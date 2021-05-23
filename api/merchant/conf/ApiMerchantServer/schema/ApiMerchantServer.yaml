@@ -4,6 +4,16 @@ info:
   version: ""
 basePath: /
 paths:
+  /apply:
+    post:
+      operationId: Apply
+      consumes:
+      - '*/*'
+      produces:
+      - '*/*'
+      responses:
+        "200":
+          description: ""
   /login:
     post:
       operationId: Login

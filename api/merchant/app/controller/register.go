@@ -1,12 +1,9 @@
 package controller
 
 import (
-	"encoding/json"
 	"github.com/go-chassis/go-chassis/v2/server/restful"
-	"github.com/go-chassis/openlog"
 	"merchant/app/protocol"
 	"merchant/app/service"
-	"merchant/middleware/cachehelper"
 	"merchant/middleware/constant"
 	"merchant/middleware/response"
 	"merchant/middleware/util"
@@ -44,13 +41,6 @@ func (r *RegisterCtrl) Register(b *restful.Context) {
 	if err != nil {
 		response.Fail(err, b)
 		return
-	}
-	// add redis info
-	info, _ := json.Marshal(merchantInfo)
-
-	err = cachehelper.KeySet(merchantInfo.Phone, string(info))
-	if err != nil {
-		openlog.Info(string(info) + " set fail")
 	}
 	response.Success(b)
 }

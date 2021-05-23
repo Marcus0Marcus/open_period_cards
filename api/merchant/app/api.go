@@ -8,4 +8,6 @@ import (
 func RegisterRouter() {
 	chassis.RegisterSchema("rest", &controller.LoginCtrl{})
 	chassis.RegisterSchema("rest", &controller.RegisterCtrl{})
+	chassis.RegisterSchema("rest", &controller.ApplyCtrl{})
+
 }
