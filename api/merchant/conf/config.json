@@ -1,0 +1,17 @@
+{
+  "mysql": {
+    "dsn": "root:123456@/open_period_cards?charset=utf8&parseTime=True&loc=Local",
+    "debug": true
+  },
+  "redis": {
+    "dsn": "localhost:6379"
+  },
+  "cookie": {
+    "name": "MxPath",
+    "prefix": "Merchant",
+    "encrypt_key": "PeriodCardMercha"
+  },
+  "cache": {
+    "cookie_prefix": "MerchantCookie_"
+  }
+}
