@@ -115,6 +115,7 @@ func (ms *merchantService) CreateMerchant(merchantInfo *MerchantInfo) (*response
 
 func (ms *merchantService) UpdateMerchant(merchantInfo *MerchantInfo) (*response.FWError, int64) {
 	merchantInfo.Mtime = time.Now().Unix()
+	openlog.Debug(merchantInfo.IndustryName)
 	err, row := ms.dbUpdateMerchant(merchantInfo)
 	if err != nil {
 		return err, row

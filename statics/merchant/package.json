@@ -1,0 +1,21 @@
+{
+  "name": "merchant",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "umi dev",
+    "build": "umi build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "umi": "^3.4.22",
+    "@umijs/preset-react": "^1.2.2"
+  },
+  "dependencies": {
+    "antd": "^4.15.6"
+  }
+}
