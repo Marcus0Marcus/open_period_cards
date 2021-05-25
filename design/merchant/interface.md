@@ -1,0 +1,48 @@
+# 接口
+- LoginFrame
+    - Login
+    1. /login
+    2. /logout
+    - Register
+    1. /apply
+    
+- MainFrame
+    - Sider
+    - Header
+    - Footer
+    - ContentFrame
+
+- ContentFrame
+    - UserList
+    1. /user/list
+    2. /user/edit
+    3. /user/info
+    - CardConfig
+    1. /card_type/list
+    2. /card_type/add
+    3. /card_type/del
+    4. /card_type/edit
+    5. /card_type/info
+    6. /card_type/upload
+    - CardList
+    1. /card/generate
+    2. /card/list
+    3. /card/add
+    4. /card/edit
+    5. /card/info
+    6. /card/upload
+    - OrderCardList
+    1. /card_order/list
+    2. /card_order/add
+    3. /card_order/edit
+    4. /card_order/info
+    5. /card_order/upload
+    - DeliveryLog
+    1. /delivery_log/list
+    2. /delivery_log/add
+    3. /delivery_log/edit
+    4. /delivery_log/info
+    5. /delivery_log/upload
+    - AccountSetting
+    1. /account/edit
+
