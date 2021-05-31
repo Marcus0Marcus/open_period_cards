@@ -3,14 +3,14 @@ package controller
 import (
 	"github.com/go-chassis/go-chassis/v2/server/restful"
 	"github.com/go-chassis/openlog"
-	"merchant/app/protocol"
-	"merchant/app/service"
-	"merchant/middleware/cachehelper"
-	"merchant/middleware/constant"
-	"merchant/middleware/global"
-	"merchant/middleware/response"
-	"merchant/middleware/util"
 	"net/http"
+	"open_period_cards/api/merchant/app/protocol"
+	"open_period_cards/data_service"
+	"open_period_cards/middleware/cachehelper"
+	"open_period_cards/middleware/constant"
+	"open_period_cards/middleware/global"
+	"open_period_cards/middleware/response"
+	"open_period_cards/middleware/util"
 )
 
 type LoginCtrl struct {
@@ -19,11 +19,11 @@ type LoginCtrl struct {
 func (r *LoginCtrl) Login(b *restful.Context) {
 	req := &protocol.LoginInfoReq{}
 	_ = b.ReadEntity(req)
-	cond := &service.MerchantInfo{
+	cond := &data_service.MerchantInfo{
 		Phone: req.Phone,
 	}
 
-	err, merchantInfo := service.NewMerchantService().GetMerchantByCond(cond)
+	err, merchantInfo := data_service.NewMerchantService().GetMerchantByCond(cond)
 	if err != nil {
 		response.Fail(constant.ErrDb, b)
 		return

@@ -2,7 +2,7 @@ package app
 
 import (
 	"github.com/go-chassis/go-chassis/v2"
-	"merchant/app/controller"
+	"open_period_cards/api/merchant/app/controller"
 )
 
 func RegisterRouter() {

@@ -1,12 +1,14 @@
 package main
 
 import (
-	"admin/app"
-	"admin/middleware/global"
 	"github.com/go-chassis/go-chassis/v2"
 	"github.com/go-chassis/openlog"
+	"open_period_cards/api/admin/app"
+	"open_period_cards/middleware/global"
 )
+
 var GlobalInfo *global.Global
+
 func main() {
 	GlobalInfo = global.NewGlobal()
 	defer global.ClearGlobal(GlobalInfo)

@@ -9,9 +9,8 @@ CREATE TABLE `tb_admin` (
                          `mtime` int(11) NOT NULL DEFAULT '0',
                          `ctime` int(11) NOT NULL DEFAULT '0',
                          `deleted` int(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment 'cacheKey|phone,Name=name';
+##########
 CREATE TABLE `tb_merchant` (
                             `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
                             `phone` varchar(11) NOT NULL DEFAULT '',
@@ -23,8 +22,8 @@ CREATE TABLE `tb_merchant` (
                             `mtime` int(11) NOT NULL DEFAULT '0',
                             `ctime` int(11) NOT NULL DEFAULT '0',
                             `deleted` int(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment 'cacheKey=phone';
+##########
 
 CREATE TABLE `tb_user` (
                                `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -35,8 +34,8 @@ CREATE TABLE `tb_user` (
                                `mtime` int(11) NOT NULL DEFAULT '0',
                                `ctime` int(11) NOT NULL DEFAULT '0',
                                `deleted` int(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment 'cacheKey=phone';
+##########
 
 CREATE TABLE `tb_card_type` (
                            `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -49,7 +48,7 @@ CREATE TABLE `tb_card_type` (
                            `ctime` int(11) NOT NULL DEFAULT '0',
                            `deleted` int(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
+##########
 CREATE TABLE `tb_card_type_info_tpl` (
                                          `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
                                          `name` varchar(60) NOT NULL DEFAULT '',
@@ -60,7 +59,7 @@ CREATE TABLE `tb_card_type_info_tpl` (
                                          `ctime` int(11) NOT NULL DEFAULT '0',
                                          `deleted` int(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '卡片携带信息的模板';
-
+##########
 
 CREATE TABLE `tb_card` (
                                 `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -75,7 +74,7 @@ CREATE TABLE `tb_card` (
                                 `ctime` int(11) NOT NULL DEFAULT '0',
                                 `deleted` int(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
+##########
 
 
 
@@ -97,7 +96,7 @@ CREATE TABLE `tb_card_order` (
                            `ctime` int(11) NOT NULL DEFAULT '0',
                            `deleted` int(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
+##########
 CREATE TABLE `tb_card_order_info` (
                                  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
                                  `card_order_id` int(11) NOT NULL DEFAULT '0',
@@ -107,7 +106,7 @@ CREATE TABLE `tb_card_order_info` (
                                  `ctime` int(11) NOT NULL DEFAULT '0',
                                  `deleted` int(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '卡片订单附带信息表';
-
+##########
 CREATE TABLE `tb_card_order_delivery_log` (
                                       `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
                                       `card_order_id` int(11) NOT NULL DEFAULT '0',
@@ -117,7 +116,7 @@ CREATE TABLE `tb_card_order_delivery_log` (
                                       `ctime` int(11) NOT NULL DEFAULT '0',
                                       `deleted` int(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '卡片订单发货记录表';
-
+##########
 CREATE TABLE `tb_card_order_change_log` (
                                               `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
                                               `card_order_id` int(11) NOT NULL DEFAULT '0',
@@ -127,22 +126,3 @@ CREATE TABLE `tb_card_order_change_log` (
                                               `ctime` int(11) NOT NULL DEFAULT '0',
                                               `deleted` int(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '卡订单信息变更记录表';
-
-insert into tb_admin(id, phone, name, pwd, salt, mtime, ctime, deleted) VALUES (1,"15091762578","nicholas.ma","003957887c70a41c60f1524cd0ec73eb","1223",1621526816,1621526816,0);
-
-# 生成删除所有表语句
-# SELECT concat('DROP TABLE IF EXISTS ', table_name, ';')
-# FROM information_schema.tables
-# WHERE table_schema = 'open_period_cards';
-
-
-DROP TABLE IF EXISTS tb_admin;
-DROP TABLE IF EXISTS tb_card;
-DROP TABLE IF EXISTS tb_card_order;
-DROP TABLE IF EXISTS tb_card_order_change_log;
-DROP TABLE IF EXISTS tb_card_order_delivery_log;
-DROP TABLE IF EXISTS tb_card_order_info;
-DROP TABLE IF EXISTS tb_card_type;
-DROP TABLE IF EXISTS tb_card_type_info_tpl;
-DROP TABLE IF EXISTS tb_merchant;
-DROP TABLE IF EXISTS tb_user;

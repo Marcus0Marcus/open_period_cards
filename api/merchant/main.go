@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/go-chassis/go-chassis/v2"
 	"github.com/go-chassis/openlog"
-	"merchant/app"
-	"merchant/middleware/global"
+	"open_period_cards/api/merchant/app"
+	"open_period_cards/middleware/global"
 )
 
 var GlobalInfo *global.Global

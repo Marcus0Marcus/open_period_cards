@@ -1,13 +1,13 @@
 package controller
 
 import (
-	"admin/app/protocol"
-	"admin/app/service"
-	"admin/middleware/constant"
-	"admin/middleware/response"
-	"admin/middleware/util"
 	"github.com/go-chassis/go-chassis/v2/server/restful"
 	"net/http"
+	"open_period_cards/api/admin/app/protocol"
+	"open_period_cards/data_service"
+	"open_period_cards/middleware/constant"
+	"open_period_cards/middleware/response"
+	"open_period_cards/middleware/util"
 )
 
 type LoginCtrl struct {
@@ -16,10 +16,10 @@ type LoginCtrl struct {
 func (r *LoginCtrl) Login(b *restful.Context) {
 	req := &protocol.LoginInfoReq{}
 	_ = b.ReadEntity(req)
-	cond := &service.AdminInfo{
+	cond := &data_service.AdminInfo{
 		Phone: req.Phone,
 	}
-	err, adminInfo := service.NewAdminService().GetAdminByCond(cond)
+	err, adminInfo := data_service.NewAdminService().GetAdminByCond(cond)
 	if err != nil {
 		response.Fail(constant.ErrDb, b)
 		return

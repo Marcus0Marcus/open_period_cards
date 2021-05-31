@@ -1,8 +1,8 @@
 package app
 
 import (
-	"admin/app/controller"
 	"github.com/go-chassis/go-chassis/v2"
+	"open_period_cards/api/admin/app/controller"
 )
 
 func RegisterRouter() {

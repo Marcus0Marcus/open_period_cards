@@ -3,12 +3,12 @@ package controller
 import (
 	"github.com/go-chassis/go-chassis/v2/server/restful"
 	"github.com/go-chassis/openlog"
-	"merchant/app/protocol"
-	"merchant/app/service"
-	"merchant/middleware/constant"
-	"merchant/middleware/response"
-	"merchant/middleware/util"
 	"net/http"
+	"open_period_cards/api/merchant/app/protocol"
+	"open_period_cards/data_service"
+	"open_period_cards/middleware/constant"
+	"open_period_cards/middleware/response"
+	"open_period_cards/middleware/util"
 	"strconv"
 )
 
@@ -24,10 +24,10 @@ func (r *ApplyCtrl) Apply(b *restful.Context) {
 	}
 	openlog.Debug(phone)
 	// get merchant info
-	cond := &service.MerchantInfo{
+	cond := &data_service.MerchantInfo{
 		Phone: phone,
 	}
-	err, merchantInfo := service.NewMerchantService().GetMerchantByCond(cond)
+	err, merchantInfo := data_service.NewMerchantService().GetMerchantByCond(cond)
 	if err != nil {
 		response.Fail(constant.ErrLogin, b)
 		return
@@ -41,7 +41,7 @@ func (r *ApplyCtrl) Apply(b *restful.Context) {
 	// fill in merchant struct
 	merchantInfo.IndustryName = req.IndustryName
 	merchantInfo.ShopName = req.ShopName
-	err, _ = service.NewMerchantService().UpdateMerchant(merchantInfo)
+	err, _ = data_service.NewMerchantService().UpdateMerchant(merchantInfo)
 	if err != nil {
 		response.Fail(err, b)
 	}

@@ -2,12 +2,12 @@ package controller
 
 import (
 	"github.com/go-chassis/go-chassis/v2/server/restful"
-	"merchant/app/protocol"
-	"merchant/app/service"
-	"merchant/middleware/constant"
-	"merchant/middleware/response"
-	"merchant/middleware/util"
 	"net/http"
+	"open_period_cards/api/merchant/app/protocol"
+	"open_period_cards/data_service"
+	"open_period_cards/middleware/constant"
+	"open_period_cards/middleware/response"
+	"open_period_cards/middleware/util"
 )
 
 type RegisterCtrl struct {
@@ -16,11 +16,11 @@ type RegisterCtrl struct {
 func (r *RegisterCtrl) Register(b *restful.Context) {
 	req := &protocol.RegisterInfoReq{}
 	_ = b.ReadEntity(req)
-	cond := &service.MerchantInfo{
+	cond := &data_service.MerchantInfo{
 		Phone: req.Phone,
 	}
 
-	err, _ := service.NewMerchantService().GetMerchantByCond(cond)
+	err, _ := data_service.NewMerchantService().GetMerchantByCond(cond)
 	if err != nil && err.Ret != constant.ErrDBNoRecord.Ret {
 		response.Fail(constant.ErrDb, b)
 		return
@@ -31,13 +31,13 @@ func (r *RegisterCtrl) Register(b *restful.Context) {
 		return
 	}
 	salt := util.GenRandSalt()
-	merchantInfo := &service.MerchantInfo{
+	merchantInfo := &data_service.MerchantInfo{
 		Phone:  req.Phone,
 		Pwd:    util.Md5(req.Password + salt),
 		Salt:   salt,
 		Status: constant.MerchantStatusApplied,
 	}
-	err, merchantInfo = service.NewMerchantService().CreateMerchant(merchantInfo)
+	err, merchantInfo = data_service.NewMerchantService().CreateMerchant(merchantInfo)
 	if err != nil {
 		response.Fail(err, b)
 		return
