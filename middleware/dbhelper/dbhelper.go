@@ -30,7 +30,24 @@ func GetDataByCond(cond interface{}, data interface{}) *response.FWError {
 	}
 	return nil
 }
+func GetPagedDataByCond(cond interface{}, data interface{}, pageNo int64, pageSize int64) (*response.FWError, int64) {
+	dbConn := global.GetDbConn()
+	// get total
+	var total int64
+	db := dbConn.Conn.Model(cond).Where(cond).Count(&total)
+	if db.Error != nil {
+		return constant.ErrDb, 0
+	}
 
+	// get paged data
+	limit := pageSize
+	offset := (pageNo - 1) * pageSize
+	db = dbConn.Conn.Offset(offset).Limit(limit).Where(cond).Find(data)
+	if db.Error != nil {
+		return constant.ErrDb, 0
+	}
+	return nil, total
+}
 func CreateData(data interface{}) (*response.FWError, interface{}) {
 	dbConn := global.GetDbConn()
 	db := dbConn.Conn.Create(data)

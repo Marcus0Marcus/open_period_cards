@@ -9,6 +9,7 @@ import (
 	"open_period_cards/middleware/response"
 	"strconv"
 	"time"
+
 )
 
 type cardService struct {
@@ -23,7 +24,7 @@ func (ms *cardService) cacheGetCard(cond *CardInfo) (*response.FWError, *CardInf
 	if cond.Id == 0 {
 		return constant.ErrCacheNotExist, nil
 	}
-	err, data := cachehelper.KeyGet("card_" + strconv.FormatInt(cond.Id, 10))
+	err, data := cachehelper.KeyGet("card_" + strconv.FormatUint(cond.Id,10))
 	if err != nil {
 		return err, nil
 	}
@@ -40,11 +41,11 @@ func (ms *cardService) cacheSetCard(cardInfo *CardInfo) *response.FWError {
 	if err != nil {
 		return constant.ErrMarshal
 	}
-	return cachehelper.KeySet("card_"+strconv.FormatInt(int64(cardInfo.Id), 10), string(cacheData))
+	return cachehelper.KeySet("card_" + strconv.FormatUint(cardInfo.Id,10), string(cacheData))
 }
 
 func (ms *cardService) cacheDelCard(cardInfo *CardInfo) *response.FWError {
-	return cachehelper.KeyDel("card_" + strconv.FormatInt(int64(cardInfo.Id), 10))
+	return cachehelper.KeyDel("card_" + strconv.FormatUint(cardInfo.Id,10))
 }
 
 // cache function end
@@ -68,9 +69,12 @@ func (ms *cardService) dbCreateCard(cardInfo *CardInfo) (*response.FWError, *Car
 	return nil, cardInfo
 }
 func (ms *cardService) dbUpdateCard(cardInfo *CardInfo) (*response.FWError, int64) {
-	err, row := dbhelper.UpdateData(cardInfo)
-	return err, row
+	return dbhelper.UpdateData(cardInfo)
 }
+func (ms *cardService) dbGetPagedCardByCond(cond *CardInfo, data *[]*CardInfo, pageNo int64, pageSize int64) (*response.FWError, int64) {
+	return dbhelper.GetPagedDataByCond(cond, data, pageNo, pageSize)
+}
+
 
 // db function end
 
@@ -120,11 +124,14 @@ func (ms *cardService) UpdateCard(cardInfo *CardInfo) (*response.FWError, int64)
 		return err, row
 	}
 
-	err = cachehelper.KeyDel("card_" + strconv.FormatInt(int64(cardInfo.Id), 10))
+	err = cachehelper.KeyDel("card_" + strconv.FormatUint(cardInfo.Id,10))
 	if err != nil {
-		openlog.Error("card_" + strconv.FormatInt(int64(cardInfo.Id), 10) + " cache del failed.")
+		openlog.Error("card_" + strconv.FormatUint(cardInfo.Id,10) + " cache del failed.")
 	}
 	return nil, row
+}
+func (ms *cardService) GetPagedCardByCond(cond *CardInfo, data *[]*CardInfo, pageNo int64, pageSize int64) (*response.FWError, int64) {
+	return ms.dbGetPagedCardByCond(cond, data, pageNo, pageSize)
 }
 
 // service function end

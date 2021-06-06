@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/go-chassis/go-chassis/v2/server/restful"
 	"github.com/go-chassis/openlog"
+	"net/url"
 	"open_period_cards/middleware/aes"
 	"open_period_cards/middleware/cachehelper"
 	"open_period_cards/middleware/constant"
@@ -20,10 +21,14 @@ func GenLoginCookie(info string) (*response.FWError, string) {
 	if err != nil {
 		return constant.ErrEnc, ""
 	}
-	return nil, base64.StdEncoding.EncodeToString(byteEn)
+	return nil, url.QueryEscape(base64.URLEncoding.EncodeToString(byteEn))
 }
 func ReverseLoginCookie(cookie string) (*response.FWError, string) {
-	byteAes, err := base64.StdEncoding.DecodeString(cookie)
+	cookie, err := url.QueryUnescape(cookie)
+	if err != nil {
+		return constant.ErrEnc, ""
+	}
+	byteAes, err := base64.URLEncoding.DecodeString(cookie)
 	if err != nil {
 		return constant.ErrEnc, ""
 	}
@@ -53,7 +58,7 @@ func GetLoginCookie(b *restful.Context) (*response.FWError, string) {
 	return GetCookie(global.GetConfig().Config.Cookie.Name, b)
 }
 func SetLoginCookie(cookie string, b *restful.Context) {
-	SetCookie(global.GetConfig().Config.Cookie.Name, cookie, b)
+	SetCookie("Set-Cookie", global.GetConfig().Config.Cookie.Name+"="+cookie, b)
 }
 
 func GetLoginPhone(b *restful.Context) (*response.FWError, string) {

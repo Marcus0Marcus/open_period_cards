@@ -44,9 +44,9 @@ var (
 		Message: "反序列化失败",
 	}
 
-	ErrPwd = &response.FWError{
+	ErrNamePwd = &response.FWError{
 		Ret:     -200000,
-		Message: "手机号或密码错误",
+		Message: "账号或密码错误",
 	}
 	ErrLogin = &response.FWError{
 		Ret:     -200001,

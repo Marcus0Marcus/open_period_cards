@@ -9,6 +9,7 @@ import (
 	"open_period_cards/middleware/response"
 	"strconv"
 	"time"
+
 )
 
 type cardOrderInfoService struct {
@@ -23,7 +24,7 @@ func (ms *cardOrderInfoService) cacheGetCardOrderInfo(cond *CardOrderInfoInfo) (
 	if cond.Id == 0 {
 		return constant.ErrCacheNotExist, nil
 	}
-	err, data := cachehelper.KeyGet("card_order_info_" + strconv.FormatInt(cond.Id, 10))
+	err, data := cachehelper.KeyGet("card_order_info_" + strconv.FormatUint(cond.Id,10))
 	if err != nil {
 		return err, nil
 	}
@@ -40,11 +41,11 @@ func (ms *cardOrderInfoService) cacheSetCardOrderInfo(cardOrderInfoInfo *CardOrd
 	if err != nil {
 		return constant.ErrMarshal
 	}
-	return cachehelper.KeySet("card_order_info_"+strconv.FormatInt(int64(cardOrderInfoInfo.Id), 10), string(cacheData))
+	return cachehelper.KeySet("card_order_info_" + strconv.FormatUint(cardOrderInfoInfo.Id,10), string(cacheData))
 }
 
 func (ms *cardOrderInfoService) cacheDelCardOrderInfo(cardOrderInfoInfo *CardOrderInfoInfo) *response.FWError {
-	return cachehelper.KeyDel("card_order_info_" + strconv.FormatInt(int64(cardOrderInfoInfo.Id), 10))
+	return cachehelper.KeyDel("card_order_info_" + strconv.FormatUint(cardOrderInfoInfo.Id,10))
 }
 
 // cache function end
@@ -68,9 +69,12 @@ func (ms *cardOrderInfoService) dbCreateCardOrderInfo(cardOrderInfoInfo *CardOrd
 	return nil, cardOrderInfoInfo
 }
 func (ms *cardOrderInfoService) dbUpdateCardOrderInfo(cardOrderInfoInfo *CardOrderInfoInfo) (*response.FWError, int64) {
-	err, row := dbhelper.UpdateData(cardOrderInfoInfo)
-	return err, row
+	return dbhelper.UpdateData(cardOrderInfoInfo)
 }
+func (ms *cardOrderInfoService) dbGetPagedCardOrderInfoByCond(cond *CardOrderInfoInfo, data *[]*CardOrderInfoInfo, pageNo int64, pageSize int64) (*response.FWError, int64) {
+	return dbhelper.GetPagedDataByCond(cond, data, pageNo, pageSize)
+}
+
 
 // db function end
 
@@ -120,11 +124,14 @@ func (ms *cardOrderInfoService) UpdateCardOrderInfo(cardOrderInfoInfo *CardOrder
 		return err, row
 	}
 
-	err = cachehelper.KeyDel("card_order_info_" + strconv.FormatInt(int64(cardOrderInfoInfo.Id), 10))
+	err = cachehelper.KeyDel("card_order_info_" + strconv.FormatUint(cardOrderInfoInfo.Id,10))
 	if err != nil {
-		openlog.Error("card_order_info_" + strconv.FormatInt(int64(cardOrderInfoInfo.Id), 10) + " cache del failed.")
+		openlog.Error("card_order_info_" + strconv.FormatUint(cardOrderInfoInfo.Id,10) + " cache del failed.")
 	}
 	return nil, row
+}
+func (ms *cardOrderInfoService) GetPagedCardOrderInfoByCond(cond *CardOrderInfoInfo, data *[]*CardOrderInfoInfo, pageNo int64, pageSize int64) (*response.FWError, int64) {
+	return ms.dbGetPagedCardOrderInfoByCond(cond, data, pageNo, pageSize)
 }
 
 // service function end

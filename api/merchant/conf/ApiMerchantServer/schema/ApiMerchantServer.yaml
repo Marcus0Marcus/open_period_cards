@@ -4,9 +4,29 @@ info:
   version: ""
 basePath: /
 paths:
+  /account/info:
+    post:
+      operationId: Info
+      consumes:
+      - '*/*'
+      produces:
+      - '*/*'
+      responses:
+        "200":
+          description: ""
   /apply:
     post:
       operationId: Apply
+      consumes:
+      - '*/*'
+      produces:
+      - '*/*'
+      responses:
+        "200":
+          description: ""
+  /card-type/list:
+    post:
+      operationId: List
       consumes:
       - '*/*'
       produces:
@@ -37,6 +57,16 @@ paths:
   /register:
     post:
       operationId: Register
+      consumes:
+      - '*/*'
+      produces:
+      - '*/*'
+      responses:
+        "200":
+          description: ""
+  /user/list:
+    post:
+      operationId: List
       consumes:
       - '*/*'
       produces:

@@ -17,7 +17,7 @@ var (
 	defaultFieldNameSplit  = "|"
 	defaultModelReplaceNum = 3
 	defaultMapFields       = map[string]string{
-		"id":      "\tId           int64  `json:\"id\" gorm:\"column:id\"`\n",
+		"id":      "\tId           uint64  `json:\"id\" gorm:\"column:id\"`\n",
 		"mtime":   "\tMtime   uint32  `json:\"mtime\" gorm:\"autoUpdateTime <-:update\"`\n",
 		"ctime":   "\tCtime   uint32  `json:\"ctime\" gorm:\"autoCreateTime <-:create\"`\n",
 		"deleted": "\tDeleted int32  `json:\"deleted\" gorm:\"column:deleted\"`\n"}

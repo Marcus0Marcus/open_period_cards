@@ -9,6 +9,7 @@ import (
 	"open_period_cards/middleware/response"
 	"strconv"
 	"time"
+
 )
 
 type adminService struct {
@@ -23,7 +24,7 @@ func (ms *adminService) cacheGetAdmin(cond *AdminInfo) (*response.FWError, *Admi
 	if cond.Id == 0 {
 		return constant.ErrCacheNotExist, nil
 	}
-	err, data := cachehelper.KeyGet("admin_" + strconv.FormatInt(cond.Id, 10))
+	err, data := cachehelper.KeyGet("admin_" + strconv.FormatUint(cond.Id,10))
 	if err != nil {
 		return err, nil
 	}
@@ -40,11 +41,11 @@ func (ms *adminService) cacheSetAdmin(adminInfo *AdminInfo) *response.FWError {
 	if err != nil {
 		return constant.ErrMarshal
 	}
-	return cachehelper.KeySet("admin_"+strconv.FormatInt(int64(adminInfo.Id), 10), string(cacheData))
+	return cachehelper.KeySet("admin_" + strconv.FormatUint(adminInfo.Id,10), string(cacheData))
 }
 
 func (ms *adminService) cacheDelAdmin(adminInfo *AdminInfo) *response.FWError {
-	return cachehelper.KeyDel("admin_" + strconv.FormatInt(int64(adminInfo.Id), 10))
+	return cachehelper.KeyDel("admin_" + strconv.FormatUint(adminInfo.Id,10))
 }
 
 // cache function end
@@ -68,9 +69,12 @@ func (ms *adminService) dbCreateAdmin(adminInfo *AdminInfo) (*response.FWError, 
 	return nil, adminInfo
 }
 func (ms *adminService) dbUpdateAdmin(adminInfo *AdminInfo) (*response.FWError, int64) {
-	err, row := dbhelper.UpdateData(adminInfo)
-	return err, row
+	return dbhelper.UpdateData(adminInfo)
 }
+func (ms *adminService) dbGetPagedAdminByCond(cond *AdminInfo, data *[]*AdminInfo, pageNo int64, pageSize int64) (*response.FWError, int64) {
+	return dbhelper.GetPagedDataByCond(cond, data, pageNo, pageSize)
+}
+
 
 // db function end
 
@@ -120,11 +124,14 @@ func (ms *adminService) UpdateAdmin(adminInfo *AdminInfo) (*response.FWError, in
 		return err, row
 	}
 
-	err = cachehelper.KeyDel("admin_" + strconv.FormatInt(int64(adminInfo.Id), 10))
+	err = cachehelper.KeyDel("admin_" + strconv.FormatUint(adminInfo.Id,10))
 	if err != nil {
-		openlog.Error("admin_" + strconv.FormatInt(int64(adminInfo.Id), 10) + " cache del failed.")
+		openlog.Error("admin_" + strconv.FormatUint(adminInfo.Id,10) + " cache del failed.")
 	}
 	return nil, row
+}
+func (ms *adminService) GetPagedAdminByCond(cond *AdminInfo, data *[]*AdminInfo, pageNo int64, pageSize int64) (*response.FWError, int64) {
+	return ms.dbGetPagedAdminByCond(cond, data, pageNo, pageSize)
 }
 
 // service function end

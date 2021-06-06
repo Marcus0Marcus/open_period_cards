@@ -13,6 +13,6 @@
     - CardConfig
     - CardList
     - OrderCardList
-    - SendLog
+    - DeliveryLog
     - AccountSetting
 

@@ -9,6 +9,7 @@ import (
 	"open_period_cards/middleware/response"
 	"strconv"
 	"time"
+
 )
 
 type userService struct {
@@ -23,7 +24,7 @@ func (ms *userService) cacheGetUser(cond *UserInfo) (*response.FWError, *UserInf
 	if cond.Id == 0 {
 		return constant.ErrCacheNotExist, nil
 	}
-	err, data := cachehelper.KeyGet("user_" + strconv.FormatInt(cond.Id, 10))
+	err, data := cachehelper.KeyGet("user_" + strconv.FormatUint(cond.Id,10))
 	if err != nil {
 		return err, nil
 	}
@@ -40,11 +41,11 @@ func (ms *userService) cacheSetUser(userInfo *UserInfo) *response.FWError {
 	if err != nil {
 		return constant.ErrMarshal
 	}
-	return cachehelper.KeySet("user_"+strconv.FormatInt(int64(userInfo.Id), 10), string(cacheData))
+	return cachehelper.KeySet("user_" + strconv.FormatUint(userInfo.Id,10), string(cacheData))
 }
 
 func (ms *userService) cacheDelUser(userInfo *UserInfo) *response.FWError {
-	return cachehelper.KeyDel("user_" + strconv.FormatInt(int64(userInfo.Id), 10))
+	return cachehelper.KeyDel("user_" + strconv.FormatUint(userInfo.Id,10))
 }
 
 // cache function end
@@ -68,9 +69,12 @@ func (ms *userService) dbCreateUser(userInfo *UserInfo) (*response.FWError, *Use
 	return nil, userInfo
 }
 func (ms *userService) dbUpdateUser(userInfo *UserInfo) (*response.FWError, int64) {
-	err, row := dbhelper.UpdateData(userInfo)
-	return err, row
+	return dbhelper.UpdateData(userInfo)
 }
+func (ms *userService) dbGetPagedUserByCond(cond *UserInfo, data *[]*UserInfo, pageNo int64, pageSize int64) (*response.FWError, int64) {
+	return dbhelper.GetPagedDataByCond(cond, data, pageNo, pageSize)
+}
+
 
 // db function end
 
@@ -120,11 +124,14 @@ func (ms *userService) UpdateUser(userInfo *UserInfo) (*response.FWError, int64)
 		return err, row
 	}
 
-	err = cachehelper.KeyDel("user_" + strconv.FormatInt(int64(userInfo.Id), 10))
+	err = cachehelper.KeyDel("user_" + strconv.FormatUint(userInfo.Id,10))
 	if err != nil {
-		openlog.Error("user_" + strconv.FormatInt(int64(userInfo.Id), 10) + " cache del failed.")
+		openlog.Error("user_" + strconv.FormatUint(userInfo.Id,10) + " cache del failed.")
 	}
 	return nil, row
+}
+func (ms *userService) GetPagedUserByCond(cond *UserInfo, data *[]*UserInfo, pageNo int64, pageSize int64) (*response.FWError, int64) {
+	return ms.dbGetPagedUserByCond(cond, data, pageNo, pageSize)
 }
 
 // service function end

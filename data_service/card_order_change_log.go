@@ -9,6 +9,7 @@ import (
 	"open_period_cards/middleware/response"
 	"strconv"
 	"time"
+
 )
 
 type cardOrderChangeLogService struct {
@@ -23,7 +24,7 @@ func (ms *cardOrderChangeLogService) cacheGetCardOrderChangeLog(cond *CardOrderC
 	if cond.Id == 0 {
 		return constant.ErrCacheNotExist, nil
 	}
-	err, data := cachehelper.KeyGet("card_order_change_log_" + strconv.FormatInt(cond.Id, 10))
+	err, data := cachehelper.KeyGet("card_order_change_log_" + strconv.FormatUint(cond.Id,10))
 	if err != nil {
 		return err, nil
 	}
@@ -40,11 +41,11 @@ func (ms *cardOrderChangeLogService) cacheSetCardOrderChangeLog(cardOrderChangeL
 	if err != nil {
 		return constant.ErrMarshal
 	}
-	return cachehelper.KeySet("card_order_change_log_"+strconv.FormatInt(int64(cardOrderChangeLogInfo.Id), 10), string(cacheData))
+	return cachehelper.KeySet("card_order_change_log_" + strconv.FormatUint(cardOrderChangeLogInfo.Id,10), string(cacheData))
 }
 
 func (ms *cardOrderChangeLogService) cacheDelCardOrderChangeLog(cardOrderChangeLogInfo *CardOrderChangeLogInfo) *response.FWError {
-	return cachehelper.KeyDel("card_order_change_log_" + strconv.FormatInt(int64(cardOrderChangeLogInfo.Id), 10))
+	return cachehelper.KeyDel("card_order_change_log_" + strconv.FormatUint(cardOrderChangeLogInfo.Id,10))
 }
 
 // cache function end
@@ -68,9 +69,12 @@ func (ms *cardOrderChangeLogService) dbCreateCardOrderChangeLog(cardOrderChangeL
 	return nil, cardOrderChangeLogInfo
 }
 func (ms *cardOrderChangeLogService) dbUpdateCardOrderChangeLog(cardOrderChangeLogInfo *CardOrderChangeLogInfo) (*response.FWError, int64) {
-	err, row := dbhelper.UpdateData(cardOrderChangeLogInfo)
-	return err, row
+	return dbhelper.UpdateData(cardOrderChangeLogInfo)
 }
+func (ms *cardOrderChangeLogService) dbGetPagedCardOrderChangeLogByCond(cond *CardOrderChangeLogInfo, data *[]*CardOrderChangeLogInfo, pageNo int64, pageSize int64) (*response.FWError, int64) {
+	return dbhelper.GetPagedDataByCond(cond, data, pageNo, pageSize)
+}
+
 
 // db function end
 
@@ -120,11 +124,14 @@ func (ms *cardOrderChangeLogService) UpdateCardOrderChangeLog(cardOrderChangeLog
 		return err, row
 	}
 
-	err = cachehelper.KeyDel("card_order_change_log_" + strconv.FormatInt(int64(cardOrderChangeLogInfo.Id), 10))
+	err = cachehelper.KeyDel("card_order_change_log_" + strconv.FormatUint(cardOrderChangeLogInfo.Id,10))
 	if err != nil {
-		openlog.Error("card_order_change_log_" + strconv.FormatInt(int64(cardOrderChangeLogInfo.Id), 10) + " cache del failed.")
+		openlog.Error("card_order_change_log_" + strconv.FormatUint(cardOrderChangeLogInfo.Id,10) + " cache del failed.")
 	}
 	return nil, row
+}
+func (ms *cardOrderChangeLogService) GetPagedCardOrderChangeLogByCond(cond *CardOrderChangeLogInfo, data *[]*CardOrderChangeLogInfo, pageNo int64, pageSize int64) (*response.FWError, int64) {
+	return ms.dbGetPagedCardOrderChangeLogByCond(cond, data, pageNo, pageSize)
 }
 
 // service function end

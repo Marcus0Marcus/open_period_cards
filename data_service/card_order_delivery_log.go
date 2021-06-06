@@ -9,6 +9,7 @@ import (
 	"open_period_cards/middleware/response"
 	"strconv"
 	"time"
+
 )
 
 type cardOrderDeliveryLogService struct {
@@ -23,7 +24,7 @@ func (ms *cardOrderDeliveryLogService) cacheGetCardOrderDeliveryLog(cond *CardOr
 	if cond.Id == 0 {
 		return constant.ErrCacheNotExist, nil
 	}
-	err, data := cachehelper.KeyGet("card_order_delivery_log_" + strconv.FormatInt(cond.Id, 10))
+	err, data := cachehelper.KeyGet("card_order_delivery_log_" + strconv.FormatUint(cond.Id,10))
 	if err != nil {
 		return err, nil
 	}
@@ -40,11 +41,11 @@ func (ms *cardOrderDeliveryLogService) cacheSetCardOrderDeliveryLog(cardOrderDel
 	if err != nil {
 		return constant.ErrMarshal
 	}
-	return cachehelper.KeySet("card_order_delivery_log_"+strconv.FormatInt(int64(cardOrderDeliveryLogInfo.Id), 10), string(cacheData))
+	return cachehelper.KeySet("card_order_delivery_log_" + strconv.FormatUint(cardOrderDeliveryLogInfo.Id,10), string(cacheData))
 }
 
 func (ms *cardOrderDeliveryLogService) cacheDelCardOrderDeliveryLog(cardOrderDeliveryLogInfo *CardOrderDeliveryLogInfo) *response.FWError {
-	return cachehelper.KeyDel("card_order_delivery_log_" + strconv.FormatInt(int64(cardOrderDeliveryLogInfo.Id), 10))
+	return cachehelper.KeyDel("card_order_delivery_log_" + strconv.FormatUint(cardOrderDeliveryLogInfo.Id,10))
 }
 
 // cache function end
@@ -68,9 +69,12 @@ func (ms *cardOrderDeliveryLogService) dbCreateCardOrderDeliveryLog(cardOrderDel
 	return nil, cardOrderDeliveryLogInfo
 }
 func (ms *cardOrderDeliveryLogService) dbUpdateCardOrderDeliveryLog(cardOrderDeliveryLogInfo *CardOrderDeliveryLogInfo) (*response.FWError, int64) {
-	err, row := dbhelper.UpdateData(cardOrderDeliveryLogInfo)
-	return err, row
+	return dbhelper.UpdateData(cardOrderDeliveryLogInfo)
 }
+func (ms *cardOrderDeliveryLogService) dbGetPagedCardOrderDeliveryLogByCond(cond *CardOrderDeliveryLogInfo, data *[]*CardOrderDeliveryLogInfo, pageNo int64, pageSize int64) (*response.FWError, int64) {
+	return dbhelper.GetPagedDataByCond(cond, data, pageNo, pageSize)
+}
+
 
 // db function end
 
@@ -120,11 +124,14 @@ func (ms *cardOrderDeliveryLogService) UpdateCardOrderDeliveryLog(cardOrderDeliv
 		return err, row
 	}
 
-	err = cachehelper.KeyDel("card_order_delivery_log_" + strconv.FormatInt(int64(cardOrderDeliveryLogInfo.Id), 10))
+	err = cachehelper.KeyDel("card_order_delivery_log_" + strconv.FormatUint(cardOrderDeliveryLogInfo.Id,10))
 	if err != nil {
-		openlog.Error("card_order_delivery_log_" + strconv.FormatInt(int64(cardOrderDeliveryLogInfo.Id), 10) + " cache del failed.")
+		openlog.Error("card_order_delivery_log_" + strconv.FormatUint(cardOrderDeliveryLogInfo.Id,10) + " cache del failed.")
 	}
 	return nil, row
+}
+func (ms *cardOrderDeliveryLogService) GetPagedCardOrderDeliveryLogByCond(cond *CardOrderDeliveryLogInfo, data *[]*CardOrderDeliveryLogInfo, pageNo int64, pageSize int64) (*response.FWError, int64) {
+	return ms.dbGetPagedCardOrderDeliveryLogByCond(cond, data, pageNo, pageSize)
 }
 
 // service function end

@@ -20,7 +20,7 @@ func (r *LoginCtrl) Login(b *restful.Context) {
 	req := &protocol.LoginInfoReq{}
 	_ = b.ReadEntity(req)
 	cond := &data_service.MerchantInfo{
-		Phone: req.Phone,
+		ShopName: req.Name,
 	}
 
 	err, merchantInfo := data_service.NewMerchantService().GetMerchantByCond(cond)
@@ -29,7 +29,7 @@ func (r *LoginCtrl) Login(b *restful.Context) {
 		return
 	}
 	if util.Md5(req.Password+merchantInfo.Salt) != merchantInfo.Pwd {
-		response.Fail(constant.ErrPwd, b)
+		response.Fail(constant.ErrNamePwd, b)
 		return
 	}
 	err, cookie := util.GenLoginCookie(merchantInfo.Phone)
@@ -38,7 +38,7 @@ func (r *LoginCtrl) Login(b *restful.Context) {
 	}
 	util.SetLoginCookie(cookie, b)
 	// add redis record
-	err = cachehelper.KeySet(global.GetConfig().Config.Cache.CookiePrefix+req.Phone, cookie)
+	err = cachehelper.KeySet(global.GetConfig().Config.Cache.CookiePrefix+merchantInfo.Phone, cookie)
 	if err != nil {
 		response.Fail(constant.ErrCacheSet, b)
 		return

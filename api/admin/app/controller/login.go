@@ -25,7 +25,7 @@ func (r *LoginCtrl) Login(b *restful.Context) {
 		return
 	}
 	if util.Md5(req.Password+adminInfo.Salt) != adminInfo.Pwd {
-		response.Fail(constant.ErrPwd, b)
+		response.Fail(constant.ErrNamePwd, b)
 		return
 	}
 	err, cookie := util.GenLoginCookie(adminInfo.Phone)

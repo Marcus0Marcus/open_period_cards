@@ -24,7 +24,7 @@ func (ms *{ServiceModelLower}Service) cacheGet{ServiceModelUpper}(cond *{Service
 	if cond.Id == 0 {
 		return constant.ErrCacheNotExist, nil
 	}
-	err, data := cachehelper.KeyGet("{CacheKeyPrefix}" + strconv.FormatInt(cond.Id,10))
+	err, data := cachehelper.KeyGet("{CacheKeyPrefix}" + strconv.FormatUint(cond.Id,10))
 	if err != nil {
 		return err, nil
 	}
@@ -41,11 +41,11 @@ func (ms *{ServiceModelLower}Service) cacheSet{ServiceModelUpper}({ServiceModelL
 	if err != nil {
 		return constant.ErrMarshal
 	}
-	return cachehelper.KeySet("{CacheKeyPrefix}" + strconv.FormatInt(int64({ServiceModelLower}{ServiceModelSuffix}.Id),10), string(cacheData))
+	return cachehelper.KeySet("{CacheKeyPrefix}" + strconv.FormatUint({ServiceModelLower}{ServiceModelSuffix}.Id,10), string(cacheData))
 }
 
 func (ms *{ServiceModelLower}Service) cacheDel{ServiceModelUpper}({ServiceModelLower}{ServiceModelSuffix} *{ServiceModelUpper}{ServiceModelSuffix}) *response.FWError {
-	return cachehelper.KeyDel("{CacheKeyPrefix}" + strconv.FormatInt(int64({ServiceModelLower}{ServiceModelSuffix}.Id),10))
+	return cachehelper.KeyDel("{CacheKeyPrefix}" + strconv.FormatUint({ServiceModelLower}{ServiceModelSuffix}.Id,10))
 }
 
 // cache function end
@@ -69,9 +69,12 @@ func (ms *{ServiceModelLower}Service) dbCreate{ServiceModelUpper}({ServiceModelL
 	return nil, {ServiceModelLower}{ServiceModelSuffix}
 }
 func (ms *{ServiceModelLower}Service) dbUpdate{ServiceModelUpper}({ServiceModelLower}{ServiceModelSuffix} *{ServiceModelUpper}{ServiceModelSuffix}) (*response.FWError, int64) {
-	err, row := dbhelper.UpdateData({ServiceModelLower}{ServiceModelSuffix})
-	return err, row
+	return dbhelper.UpdateData({ServiceModelLower}{ServiceModelSuffix})
 }
+func (ms *{ServiceModelLower}Service) dbGetPaged{ServiceModelUpper}ByCond(cond *{ServiceModelUpper}{ServiceModelSuffix}, data *[]*{ServiceModelUpper}{ServiceModelSuffix}, pageNo int64, pageSize int64) (*response.FWError, int64) {
+	return dbhelper.GetPagedDataByCond(cond, data, pageNo, pageSize)
+}
+
 
 // db function end
 
@@ -121,11 +124,14 @@ func (ms *{ServiceModelLower}Service) Update{ServiceModelUpper}({ServiceModelLow
 		return err, row
 	}
 
-	err = cachehelper.KeyDel("{CacheKeyPrefix}" + strconv.FormatInt(int64({ServiceModelLower}{ServiceModelSuffix}.Id),10))
+	err = cachehelper.KeyDel("{CacheKeyPrefix}" + strconv.FormatUint({ServiceModelLower}{ServiceModelSuffix}.Id,10))
 	if err != nil {
-		openlog.Error("{CacheKeyPrefix}" + strconv.FormatInt(int64({ServiceModelLower}{ServiceModelSuffix}.Id),10) + " cache del failed.")
+		openlog.Error("{CacheKeyPrefix}" + strconv.FormatUint({ServiceModelLower}{ServiceModelSuffix}.Id,10) + " cache del failed.")
 	}
 	return nil, row
+}
+func (ms *{ServiceModelLower}Service) GetPaged{ServiceModelUpper}ByCond(cond *{ServiceModelUpper}{ServiceModelSuffix}, data *[]*{ServiceModelUpper}{ServiceModelSuffix}, pageNo int64, pageSize int64) (*response.FWError, int64) {
+	return ms.dbGetPaged{ServiceModelUpper}ByCond(cond, data, pageNo, pageSize)
 }
 
 // service function end

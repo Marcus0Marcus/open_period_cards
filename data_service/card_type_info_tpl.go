@@ -9,6 +9,7 @@ import (
 	"open_period_cards/middleware/response"
 	"strconv"
 	"time"
+
 )
 
 type cardTypeInfoTplService struct {
@@ -23,7 +24,7 @@ func (ms *cardTypeInfoTplService) cacheGetCardTypeInfoTpl(cond *CardTypeInfoTplI
 	if cond.Id == 0 {
 		return constant.ErrCacheNotExist, nil
 	}
-	err, data := cachehelper.KeyGet("card_type_info_tpl_" + strconv.FormatInt(cond.Id, 10))
+	err, data := cachehelper.KeyGet("card_type_info_tpl_" + strconv.FormatUint(cond.Id,10))
 	if err != nil {
 		return err, nil
 	}
@@ -40,11 +41,11 @@ func (ms *cardTypeInfoTplService) cacheSetCardTypeInfoTpl(cardTypeInfoTplInfo *C
 	if err != nil {
 		return constant.ErrMarshal
 	}
-	return cachehelper.KeySet("card_type_info_tpl_"+strconv.FormatInt(int64(cardTypeInfoTplInfo.Id), 10), string(cacheData))
+	return cachehelper.KeySet("card_type_info_tpl_" + strconv.FormatUint(cardTypeInfoTplInfo.Id,10), string(cacheData))
 }
 
 func (ms *cardTypeInfoTplService) cacheDelCardTypeInfoTpl(cardTypeInfoTplInfo *CardTypeInfoTplInfo) *response.FWError {
-	return cachehelper.KeyDel("card_type_info_tpl_" + strconv.FormatInt(int64(cardTypeInfoTplInfo.Id), 10))
+	return cachehelper.KeyDel("card_type_info_tpl_" + strconv.FormatUint(cardTypeInfoTplInfo.Id,10))
 }
 
 // cache function end
@@ -68,9 +69,12 @@ func (ms *cardTypeInfoTplService) dbCreateCardTypeInfoTpl(cardTypeInfoTplInfo *C
 	return nil, cardTypeInfoTplInfo
 }
 func (ms *cardTypeInfoTplService) dbUpdateCardTypeInfoTpl(cardTypeInfoTplInfo *CardTypeInfoTplInfo) (*response.FWError, int64) {
-	err, row := dbhelper.UpdateData(cardTypeInfoTplInfo)
-	return err, row
+	return dbhelper.UpdateData(cardTypeInfoTplInfo)
 }
+func (ms *cardTypeInfoTplService) dbGetPagedCardTypeInfoTplByCond(cond *CardTypeInfoTplInfo, data *[]*CardTypeInfoTplInfo, pageNo int64, pageSize int64) (*response.FWError, int64) {
+	return dbhelper.GetPagedDataByCond(cond, data, pageNo, pageSize)
+}
+
 
 // db function end
 
@@ -120,11 +124,14 @@ func (ms *cardTypeInfoTplService) UpdateCardTypeInfoTpl(cardTypeInfoTplInfo *Car
 		return err, row
 	}
 
-	err = cachehelper.KeyDel("card_type_info_tpl_" + strconv.FormatInt(int64(cardTypeInfoTplInfo.Id), 10))
+	err = cachehelper.KeyDel("card_type_info_tpl_" + strconv.FormatUint(cardTypeInfoTplInfo.Id,10))
 	if err != nil {
-		openlog.Error("card_type_info_tpl_" + strconv.FormatInt(int64(cardTypeInfoTplInfo.Id), 10) + " cache del failed.")
+		openlog.Error("card_type_info_tpl_" + strconv.FormatUint(cardTypeInfoTplInfo.Id,10) + " cache del failed.")
 	}
 	return nil, row
+}
+func (ms *cardTypeInfoTplService) GetPagedCardTypeInfoTplByCond(cond *CardTypeInfoTplInfo, data *[]*CardTypeInfoTplInfo, pageNo int64, pageSize int64) (*response.FWError, int64) {
+	return ms.dbGetPagedCardTypeInfoTplByCond(cond, data, pageNo, pageSize)
 }
 
 // service function end

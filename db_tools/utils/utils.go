@@ -61,8 +61,11 @@ func GetFieldModel(fieldName string) string {
 	return strings.Join(names, "")
 }
 func GetFieldType(fieldName string, fieldType string) string {
-	if strings.Index(fieldName, "time") != -1 {
+	if strings.HasSuffix(fieldName, "time") || strings.HasSuffix(fieldName, "times") || strings.HasSuffix(fieldName, "type") {
 		return "uint32"
+	}
+	if strings.Index(fieldName, "id") != -1 {
+		return "uint64"
 	}
 	if strings.Index(strings.ToLower(fieldType), "int") == -1 {
 		return "string"
